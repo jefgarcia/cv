@@ -1,0 +1,735 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Jef Garcia — Senior Quality Engineer</title>
+  <meta name="description" content="Jef Garcia — Senior Quality Engineer in Melbourne with 10+ years across digital banking, payments, mobile and web platforms.">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f7f6f2" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0f1215" media="(prefers-color-scheme: dark)">
+
+  <!-- Apply saved theme before first paint to avoid a flash -->
+  <script>
+    (function () {
+      var root = document.documentElement;
+      root.classList.add('js');
+      try {
+        var t = localStorage.getItem('theme');
+        if (t === 'light' || t === 'dark') root.setAttribute('data-theme', t);
+      } catch (e) {}
+    })();
+  </script>
+
+  <link rel=preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* ---------- Tokens ---------- */
+    :root {
+      --bg: #f7f6f2;
+      --surface: #ffffff;
+      --surface-2: #efede6;
+      --text: #1b1d21;
+      --muted: #545a64;
+      --line: #dcd9d0;
+      --accent: #0f6f67;
+      --accent-soft: #d8efeb;
+      --accent-text: #0b5a53;
+      --shadow: 0 1px 2px rgb(20 20 20 / .04), 0 8px 24px rgb(20 20 20 / .06);
+      --focus: #b3470d;
+
+      --font-body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+
+      --radius: 14px;
+      --gutter: clamp(1rem, 4vw, 3rem);
+      --maxw: 76rem;
+      color-scheme: light;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #0f1215;
+        --surface: #161a1f;
+        --surface-2: #1d2228;
+        --text: #e9e7e2;
+        --muted: #a4abb5;
+        --line: #2b3139;
+        --accent: #5fd4c4;
+        --accent-soft: #15332f;
+        --accent-text: #7fe3d5;
+        --shadow: 0 1px 2px rgb(0 0 0 / .3), 0 8px 24px rgb(0 0 0 / .35);
+        --focus: #ffb37a;
+        color-scheme: dark;
+      }
+    }
+    :root[data-theme="dark"] {
+      --bg: #0f1215;
+      --surface: #161a1f;
+      --surface-2: #1d2228;
+      --text: #e9e7e2;
+      --muted: #a4abb5;
+      --line: #2b3139;
+      --accent: #5fd4c4;
+      --accent-soft: #15332f;
+      --accent-text: #7fe3d5;
+      --shadow: 0 1px 2px rgb(0 0 0 / .3), 0 8px 24px rgb(0 0 0 / .35);
+      --focus: #ffb37a;
+      color-scheme: dark;
+    }
+
+    /* ---------- Base ---------- */
+    *, *::before, *::after { box-sizing: border-box; }
+    html {
+      /* Fluid base size: ~15px on phones → ~18px on 2K screens */
+      font-size: clamp(0.94rem, 0.85rem + 0.25vw, 1.125rem);
+      -webkit-text-size-adjust: 100%;
+      scroll-behavior: smooth;
+    }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      line-height: 1.6;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      transition: background-color .35s ease, color .35s ease;
+      padding-block: env(safe-area-inset-top, 0) env(safe-area-inset-bottom, 0);
+    }
+    a { color: var(--accent-text); text-underline-offset: .18em; text-decoration-thickness: 1px; }
+    a:hover { text-decoration-thickness: 2px; }
+    :focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; border-radius: 4px; }
+    h1, h2, h3 { line-height: 1.2; margin: 0; }
+    ul { margin: 0; padding: 0; }
+
+    .visually-hidden {
+      position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+    }
+    .skip-link {
+      position: absolute; left: 1rem; top: -4rem; z-index: 100;
+      background: var(--text); color: var(--bg); padding: .7rem 1rem; border-radius: 8px;
+      font-weight: 600; text-decoration: none; transition: top .2s ease;
+    }
+    .skip-link:focus { top: 1rem; }
+
+    .wrap { max-width: var(--maxw); margin-inline: auto; padding-inline: var(--gutter); }
+
+    /* ---------- Top bar ---------- */
+    .topbar {
+      position: sticky; top: 0; z-index: 50;
+      padding-top: env(safe-area-inset-top, 0);
+      background: color-mix(in srgb, var(--bg) 82%, transparent);
+      backdrop-filter: saturate(1.4) blur(10px);
+      -webkit-backdrop-filter: saturate(1.4) blur(10px);
+      border-bottom: 1px solid transparent;
+      transition: border-color .3s ease, background-color .35s ease;
+    }
+    .topbar.is-scrolled { border-bottom-color: var(--line); }
+    .topbar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 3.5rem; }
+    .monogram {
+      font-family: var(--font-display); font-weight: 650; font-size: 1.15rem;
+      color: var(--text); text-decoration: none; letter-spacing: -.01em;
+    }
+    .monogram span { color: var(--accent); }
+    .topnav { display: flex; align-items: center; gap: clamp(.5rem, 2vw, 1.5rem); }
+    .topnav ul { display: flex; gap: clamp(.75rem, 2vw, 1.5rem); list-style: none; }
+    .topnav a { color: var(--muted); text-decoration: none; font-size: .9rem; font-weight: 500; }
+    .topnav a:hover, .topnav a[aria-current="true"] { color: var(--text); }
+    @media (max-width: 40rem) { .topnav ul { display: none; } }
+
+    .theme-toggle {
+      display: inline-grid; place-items: center; width: 2.5rem; height: 2.5rem;
+      border-radius: 999px; border: 1px solid var(--line); background: var(--surface);
+      color: var(--text); cursor: pointer; transition: transform .2s ease, background-color .35s ease, border-color .35s ease;
+    }
+    .theme-toggle:hover { transform: rotate(-12deg); }
+    .theme-toggle svg { width: 1.2rem; height: 1.2rem; }
+    .theme-toggle .sun { display: none; }
+    :root[data-theme="dark"] .theme-toggle .sun { display: block; }
+    :root[data-theme="dark"] .theme-toggle .moon { display: none; }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) .theme-toggle .sun { display: block; }
+      :root:not([data-theme="light"]) .theme-toggle .moon { display: none; }
+    }
+
+    /* ---------- Hero ---------- */
+    .hero { padding-block: clamp(2.5rem, 7vw, 6rem) clamp(2rem, 5vw, 4rem); position: relative; overflow: hidden; }
+    .hero::before {
+      content: ""; position: absolute; inset: -30% -10% auto auto; width: min(60vw, 42rem); aspect-ratio: 1;
+      background: radial-gradient(circle at center, var(--accent-soft), transparent 65%);
+      z-index: -1; animation: drift 18s ease-in-out infinite alternate;
+    }
+    @keyframes drift { to { transform: translate(-8%, 12%) scale(1.08); } }
+
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: .5rem;
+      font-size: .8rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--accent-text);
+    }
+    .eyebrow::before { content: ""; width: 1.75rem; height: 2px; background: currentColor; border-radius: 2px; }
+    .hero h1 {
+      font-family: var(--font-display); font-weight: 650;
+      font-size: clamp(2.75rem, 1.6rem + 6vw, 6rem); letter-spacing: -.035em; margin-block: .75rem .5rem;
+    }
+    .hero .role { font-size: clamp(1.1rem, 1rem + .6vw, 1.5rem); color: var(--muted); margin: 0; }
+    .hero .role strong { color: var(--text); font-weight: 600; }
+
+    .contact { display: flex; flex-wrap: wrap; gap: .6rem; list-style: none; margin-top: 1.75rem; }
+    .contact a, .contact span {
+      display: inline-flex; align-items: center; gap: .5rem; min-height: 2.75rem;
+      padding: .5rem .95rem; border-radius: 999px; border: 1px solid var(--line);
+      background: var(--surface); color: var(--text); text-decoration: none; font-size: .92rem;
+      transition: border-color .2s ease, transform .2s ease, background-color .35s ease;
+    }
+    .contact a:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .contact svg { width: 1rem; height: 1rem; color: var(--accent); flex: none; }
+
+    .stats {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
+      gap: 1rem; list-style: none; margin-top: clamp(2rem, 5vw, 3.5rem);
+    }
+    .stats li { border-top: 2px solid var(--text); padding-top: .85rem; }
+    .stats .num {
+      display: block; font-family: var(--font-display); font-weight: 650;
+      font-size: clamp(1.9rem, 1.4rem + 1.8vw, 2.8rem); letter-spacing: -.02em; line-height: 1.1;
+      font-variant-numeric: tabular-nums;
+    }
+    .stats .lbl { color: var(--muted); font-size: .9rem; }
+
+    /* ---------- Layout ---------- */
+    .layout {
+      display: grid; gap: clamp(2rem, 4vw, 4rem);
+      grid-template-columns: 1fr;
+      padding-block: clamp(1rem, 3vw, 2rem) clamp(3rem, 8vw, 6rem);
+    }
+    @media (min-width: 62rem) {
+      .layout { grid-template-columns: minmax(0, 1fr) minmax(16rem, 22rem); align-items: start; }
+      .sidebar { position: sticky; top: 5rem; }
+    }
+
+    section { scroll-margin-top: 5rem; }
+    .section-title {
+      display: flex; align-items: baseline; gap: .75rem;
+      font-family: var(--font-display); font-weight: 650; font-size: clamp(1.45rem, 1.2rem + 1vw, 2rem);
+      letter-spacing: -.02em; margin-bottom: 1.25rem;
+    }
+    .section-title .idx { font-family: var(--font-body); font-size: .8rem; font-weight: 600; color: var(--accent-text); letter-spacing: .08em; }
+
+    .summary p { font-size: clamp(1.05rem, 1rem + .3vw, 1.25rem); line-height: 1.7; margin: 0; max-width: 62ch; }
+    .main > section + section { margin-top: clamp(3rem, 6vw, 4.5rem); }
+
+    /* ---------- Timeline ---------- */
+    .timeline { list-style: none; position: relative; padding-left: 1.75rem; }
+    .timeline::before {
+      content: ""; position: absolute; left: .4rem; top: .5rem; bottom: .5rem; width: 2px;
+      background: var(--line); transform-origin: top;
+    }
+    .js .timeline::before { transform: scaleY(0); transition: transform 1.4s cubic-bezier(.2,.7,.2,1); }
+    .js .timeline.in-view::before { transform: scaleY(1); }
+
+    .job { position: relative; padding-bottom: clamp(1.75rem, 3vw, 2.5rem); }
+    .job:last-child { padding-bottom: 0; }
+    .job::before {
+      content: ""; position: absolute; left: -1.75rem; top: .45rem; width: .85rem; height: .85rem; border-radius: 50%;
+      background: var(--bg); border: 2px solid var(--accent); transition: background-color .3s ease, transform .3s ease;
+    }
+    .job:hover::before, .job:focus-within::before { background: var(--accent); transform: scale(1.15); }
+    .job.current::before { background: var(--accent); box-shadow: 0 0 0 0 var(--accent); animation: pulse 2.4s ease-out infinite; }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 55%, transparent); }
+      100% { box-shadow: 0 0 0 12px transparent; }
+    }
+
+    .card {
+      background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+      padding: clamp(1.1rem, 2.5vw, 1.75rem); box-shadow: var(--shadow);
+      transition: transform .3s ease, border-color .3s ease, background-color .35s ease;
+    }
+    .job:hover .card { transform: translateY(-3px); border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); }
+
+    .job-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .25rem 1rem; align-items: baseline; }
+    .job h3 { font-size: clamp(1.1rem, 1rem + .4vw, 1.3rem); font-weight: 600; letter-spacing: -.01em; }
+    .job .org { color: var(--muted); margin: .15rem 0 0; font-size: .95rem; }
+    .job .dates {
+      font-size: .82rem; font-weight: 600; color: var(--accent-text); background: var(--accent-soft);
+      padding: .25rem .65rem; border-radius: 999px; white-space: nowrap; font-variant-numeric: tabular-nums;
+    }
+    .job .note { margin: .9rem 0 0; font-style: italic; color: var(--muted); font-size: .95rem; }
+    .job .sub {
+      margin: 1.1rem 0 .4rem; font-size: .78rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: .1em; color: var(--muted);
+    }
+    .bullets { list-style: none; margin-top: .9rem; display: grid; gap: .55rem; }
+    .sub + .bullets { margin-top: 0; }
+    .bullets li { position: relative; padding-left: 1.2rem; }
+    .bullets li::before {
+      content: ""; position: absolute; left: 0; top: .68em; width: .45rem; height: 2px; background: var(--accent); border-radius: 2px;
+    }
+
+    details.more { margin-top: .75rem; }
+    details.more summary {
+      cursor: pointer; font-weight: 600; color: var(--accent-text); font-size: .92rem;
+      list-style: none; display: inline-flex; align-items: center; gap: .4rem; min-height: 2.75rem;
+    }
+    details.more summary::-webkit-details-marker { display: none; }
+    details.more summary::after { content: "+"; font-size: 1.1rem; transition: transform .25s ease; }
+    details.more[open] summary::after { transform: rotate(45deg); }
+    details.more[open] .bullets { animation: fadeDown .35s ease both; }
+    @keyframes fadeDown { from { opacity: 0; transform: translateY(-6px); } }
+
+    /* ---------- Sidebar ---------- */
+    .sidebar { display: grid; gap: clamp(1.25rem, 3vw, 2rem); }
+    .skill-group + .skill-group { margin-top: 1.25rem; }
+    .skill-group h3 { font-size: .95rem; font-weight: 600; margin-bottom: .6rem; }
+    .chips { display: flex; flex-wrap: wrap; gap: .4rem; list-style: none; }
+    .chips li {
+      font-size: .82rem; padding: .3rem .7rem; border-radius: 999px;
+      background: var(--surface-2); color: var(--text); border: 1px solid var(--line);
+      transition: background-color .2s ease, color .2s ease, border-color .2s ease;
+    }
+    .chips li:hover { background: var(--accent-soft); border-color: var(--accent); color: var(--accent-text); }
+    .js .chips.reveal li { opacity: 0; transform: translateY(6px); transition: opacity .4s ease, transform .4s ease; transition-delay: calc(var(--i, 0) * 35ms); }
+    .js .chips.reveal.in-view li { opacity: 1; transform: none; }
+
+    .edu { list-style: none; display: grid; gap: 1rem; }
+    .edu h3 { font-size: .98rem; font-weight: 600; }
+    .edu p { margin: .15rem 0 0; color: var(--muted); font-size: .9rem; }
+
+    .footer { border-top: 1px solid var(--line); padding-block: 2rem calc(2rem + env(safe-area-inset-bottom, 0)); color: var(--muted); font-size: .88rem; }
+    .footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem; }
+    .contact a.cta { background: var(--accent); border-color: var(--accent); color: var(--bg); font-weight: 600; }
+    .contact a.cta svg { color: currentColor; }
+    .contact a.cta:hover { background: var(--accent-text); border-color: var(--accent-text); }
+
+    /* ---------- Reveal-on-scroll (only when JS is running) ---------- */
+    .js .reveal { opacity: 0; transform: translateY(18px); transition: opacity .7s ease, transform .7s cubic-bezier(.2,.7,.2,1); }
+    .js .reveal.in-view { opacity: 1; transform: none; }
+    .js .chips.reveal { opacity: 1; transform: none; }
+
+    /* Hero entrance */
+    .hero .enter { animation: rise .8s cubic-bezier(.2,.7,.2,1) both; animation-delay: calc(var(--d, 0) * 110ms); }
+    @keyframes rise { from { opacity: 0; transform: translateY(20px); } }
+
+    /* ---------- Large screens (1440p / 2K) ---------- */
+    @media (min-width: 110rem) {
+      :root { --maxw: 88rem; }
+      .layout { grid-template-columns: minmax(0, 1fr) 26rem; }
+    }
+
+    /* ---------- Accessibility preferences ---------- */
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after {
+        animation-duration: .01ms !important; animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important; transition-delay: 0s !important;
+      }
+      .js .reveal, .js .chips.reveal li { opacity: 1; transform: none; }
+      .js .timeline::before { transform: none; }
+    }
+    @media (forced-colors: active) {
+      .job::before, .bullets li::before { background: CanvasText; border-color: CanvasText; }
+      .card, .contact a, .chips li { border: 1px solid CanvasText; }
+    }
+
+    /* ---------- Print ---------- */
+    @media print {
+      :root { --bg: #fff; --surface: #fff; --surface-2: #fff; --text: #000; --muted: #333; --line: #bbb; --accent: #000; --accent-text: #000; --accent-soft: #fff; --shadow: none; }
+      .topbar, .skip-link, .footer, .hero::before, .stats { display: none !important; }
+      .js .reveal, .js .chips.reveal li { opacity: 1 !important; transform: none !important; }
+      .js .timeline::before { transform: none; }
+      .layout { grid-template-columns: 1fr; }
+      .card { box-shadow: none; break-inside: avoid; }
+      details.more > summary { display: none; }
+      a { color: #000; text-decoration: none; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="topbar" id="topbar">
+    <div class="wrap">
+      <a class="monogram" href="#top" aria-label="Jef Garcia, back to top">Jef Garcia<span>.</span></a>
+      <nav class="topnav" aria-label="Sections">
+        <ul>
+          <li><a href="#summary">Summary</a></li>
+          <li><a href="#experience">Experience</a></li>
+          <li><a href="#skills">Skills</a></li>
+          <li><a href="#education">Education</a></li>
+        </ul>
+        <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to dark theme">
+          <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+          <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" tabindex="-1">
+    <section class="hero" id="top" aria-labelledby="name">
+      <div class="wrap">
+        <p class="eyebrow enter" style="--d:0">Melbourne, VIC</p>
+        <h1 id="name" class="enter" style="--d:1">Jef Garcia</h1>
+        <p class="role enter" style="--d:2"><strong>Senior Quality Engineer</strong> — digital banking, payments &amp; mobile</p>
+
+        <ul class="contact enter" style="--d:3" aria-label="Contact details">
+          <li>
+            <a href="mailto:jefgarcia@gmail.com">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+              jefgarcia@gmail.com
+            </a>
+          </li>
+          <li>
+            <a href="tel:+61406702565">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>
+              0406 702 565
+            </a>
+          </li>
+          <li>
+            <a href="https://www.linkedin.com/in/jefgarcia" rel="noopener" target="_blank">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+              linkedin.com/in/jefgarcia
+            </a>
+          </li>
+          <li>
+            <a class="cta" href="Jef_Garcia_CV.pdf" download type="application/pdf">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
+              Download CV <span class="visually-hidden">(</span>PDF<span class="visually-hidden">, 2 pages)</span>
+            </a>
+          </li>
+        </ul>
+
+        <ul class="stats" aria-label="Highlights">
+          <li class="enter" style="--d:4"><span class="num"><span data-count="10">10</span>+</span><span class="lbl">years in quality engineering</span></li>
+          <li class="enter" style="--d:5"><span class="num">30→5 min</span><span class="lbl">Test Summary Report prep with Claude Code</span></li>
+          <li class="enter" style="--d:6"><span class="num">iOS + Android</span><span class="lbl">mobile QE across banking &amp; payments</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <div class="wrap layout">
+      <div class="main">
+        <section id="summary" class="summary reveal" aria-labelledby="summary-title">
+          <h2 class="section-title" id="summary-title"><span class="idx" aria-hidden="true">01</span>Professional summary</h2>
+          <p>Quality Engineer with 10+ years' experience across digital banking, payments, mobile and web platforms, spanning ANZ, ANZ Plus, Cash App and Crown Resorts. Specialises in mobile quality engineering (iOS/Android), API validation, test strategy and defect management within complex financial and Agile environments. Builds practical automation and AI-assisted tooling — including Claude Code-based reporting skills — that cut manual effort and lift team consistency. Known for identifying risk early, mentoring test analysts, and helping squads ship secure, reliable, customer-focused releases.</p>
+        </section>
+
+        <section id="experience" aria-labelledby="experience-title">
+          <h2 class="section-title reveal" id="experience-title"><span class="idx" aria-hidden="true">02</span>Professional experience</h2>
+
+          <ol class="timeline" id="timeline">
+            <li class="job current reveal">
+              <article class="card" aria-labelledby="job1">
+                <div class="job-head">
+                  <div>
+                    <h3 id="job1">Senior Quality Engineer</h3>
+                    <p class="org">ANZ Plus, Docklands · <span class="visually-hidden">previously </span><span aria-hidden="true">prev. </span>Mobile Quality Engineer</p>
+                  </div>
+                  <p class="dates">Mar 2024 – Present</p>
+                </div>
+                <p class="note">Promoted to Senior Quality Engineer in June 2024 in recognition of expanded ownership of test strategy and team mentoring.</p>
+
+                <h4 class="sub">Since promotion</h4>
+                <ul class="bullets">
+                  <li>Own test strategy for the Business and Private Banking domain, setting the testing approach for new commercial features from planning through release.</li>
+                  <li>Mentor new starters on the squad, onboarding them into mobile QE practices, domain knowledge and team testing standards.</li>
+                  <li>Extended the Claude Code-based reporting skill to generate a Test Traceability Report alongside the existing Test Summary Report, giving the team end-to-end visibility from requirements to test coverage.</li>
+                </ul>
+
+                <h4 class="sub">Core role</h4>
+                <ul class="bullets">
+                  <li>Own quality across Statements, Store &amp; Engagement, Accounts and Commercial banking — validating app behaviour, backend integration and customer communication flows before release across iOS and Android.</li>
+                  <li>Built a Postman collection to validate banner/notification APIs end-to-end, giving the team a repeatable check across backend and mobile app behaviour.</li>
+                  <li>Built end-to-end UI automation using Maestro to validate interest rate change journeys, strengthening regression coverage for a high-risk customer-facing feature.</li>
+                  <li>Created a semi-automated Test Summary Report (TSR) skill using Claude Code, cutting TSR preparation time from ~30 minutes to ~5 minutes while improving consistency across the team.</li>
+                </ul>
+                <details class="more">
+                  <summary>More from this role</summary>
+                  <ul class="bullets">
+                    <li>Improved test data readiness by scripting and documenting setup steps for key testing journeys, reducing reliance on informal/tribal knowledge.</li>
+                    <li>Wrote shell scripts to chain CLI commands for repetitive setup tasks — e.g. activating card details, or creating a new test user and setting it up with a selfie image in one pass — cutting manual test data setup time.</li>
+                    <li>Built a proof of concept to automate terminal-based testing of legacy systems via the Mocha TN3270 terminal emulator, enabling faster, more repeatable coverage of workflows that had previously relied on manual command entry.</li>
+                    <li>Used JIRA, Xray, GitHub, GCP and Postman to manage test activity, track coverage and support release decisions across a complex, fast-changing ANZ environment.</li>
+                  </ul>
+                </details>
+              </article>
+            </li>
+
+            <li class="job reveal">
+              <article class="card" aria-labelledby="job2">
+                <div class="job-head">
+                  <div>
+                    <h3 id="job2">QA Engineer</h3>
+                    <p class="org">Cash App, Melbourne</p>
+                  </div>
+                  <p class="dates">Jul 2023 – Feb 2024</p>
+                </div>
+                <ul class="bullets">
+                  <li>Owned quality for cross-border money movement and payment card connection experiences across iOS and Android for a global payments product.</li>
+                  <li>Improved end-to-end XCUITest coverage for international use cases, increasing release confidence across global payment journeys.</li>
+                  <li>Developed and maintained test plans for payment card connection flows, adapting quickly to shifting project scope.</li>
+                  <li>Contributed to Global Banking &amp; Payments team guides and data visualisation tooling used for release decision-making.</li>
+                </ul>
+              </article>
+            </li>
+
+            <li class="job reveal">
+              <article class="card" aria-labelledby="job3">
+                <div class="job-head">
+                  <div>
+                    <h3 id="job3">Test Engineer</h3>
+                    <p class="org">ANZ Plus, Docklands</p>
+                  </div>
+                  <p class="dates">Apr 2021 – Jul 2023</p>
+                </div>
+                <ul class="bullets">
+                  <li>Recognised as a top performer for consistently exceeding expectations and driving team outcomes.</li>
+                  <li>Coached the squad on mobile automation using XCUITest (iOS) and Espresso/Barista (Android); built an Appium proof of concept in JavaScript to explore future automation coverage.</li>
+                  <li>Validated payment methods including Samsung Pay, Google Pay, Apple Wallet and Visa Card Controls, supporting major payment initiatives pre-release.</li>
+                  <li>Wrote Bash scripts for API testing and reporting, improving testing speed, accuracy and result visibility.</li>
+                  <li>Led bug bashes and ran accessibility/inclusive-design sessions, embedding earlier quality thinking across the squad.</li>
+                  <li>Used GCP logs and Dynatrace to monitor systems and speed up production issue resolution.</li>
+                </ul>
+              </article>
+            </li>
+
+            <li class="job reveal">
+              <article class="card" aria-labelledby="job4">
+                <div class="job-head">
+                  <div>
+                    <h3 id="job4">Quality Analyst</h3>
+                    <p class="org">MYOB, Richmond</p>
+                  </div>
+                  <p class="dates">Nov 2019 – Apr 2021</p>
+                </div>
+                <ul class="bullets">
+                  <li>Tested a legacy-to-cloud financial data migration across UI, backend and data quality, identifying risk early to protect delivery.</li>
+                  <li>Wrote automated UI tests in TypeScript, Webdriver and Cypress, improving regression coverage and release confidence.</li>
+                  <li>Trained squads on test pyramid principles and onboarded new QA team members through structured training.</li>
+                </ul>
+              </article>
+            </li>
+
+            <li class="job reveal">
+              <article class="card" aria-labelledby="job5">
+                <div class="job-head">
+                  <div>
+                    <h3 id="job5">Digital Test Lead</h3>
+                    <p class="org">Crown Resorts, Melbourne</p>
+                  </div>
+                  <p class="dates">Sep 2018 – Nov 2019</p>
+                </div>
+                <ul class="bullets">
+                  <li>Led testing across Crown Melbourne and Crown Perth mobile apps, APIs and websites, managing two QA consultants.</li>
+                  <li>Started reusable automation frameworks (API, Android, iOS, web) to support broader Enterprise QA practices.</li>
+                  <li>Documented testing standards and embedded testing earlier in delivery, reducing critical/major defects in the Android app.</li>
+                </ul>
+              </article>
+            </li>
+
+            <li class="job reveal">
+              <article class="card" aria-labelledby="job6">
+                <div class="job-head">
+                  <div>
+                    <h3 id="job6">Senior QA Analyst</h3>
+                    <p class="org">Crown Resorts, Melbourne</p>
+                  </div>
+                  <p class="dates">Dec 2016 – Sep 2018</p>
+                </div>
+                <ul class="bullets">
+                  <li>Led 3 Software Test Analysts on the Crown Rewards Revamp project and reported quality/defect insights to senior stakeholders.</li>
+                  <li>Owned test plans and defect registers across complex delivery programs, mentoring new Enterprise QA members.</li>
+                </ul>
+              </article>
+            </li>
+
+            <li class="job reveal">
+              <article class="card" aria-labelledby="job7">
+                <div class="job-head">
+                  <div>
+                    <h3 id="job7">QA Analyst</h3>
+                    <p class="org">Crown Resorts, Melbourne</p>
+                  </div>
+                  <p class="dates">Aug 2012 – Dec 2016</p>
+                </div>
+                <ul class="bullets">
+                  <li>Executed manual and integration testing and coordinated UAT with business units to strengthen release readiness.</li>
+                </ul>
+              </article>
+            </li>
+          </ol>
+        </section>
+      </div>
+
+      <aside class="sidebar" aria-label="Skills and education">
+        <section id="skills" class="card reveal" aria-labelledby="skills-title">
+          <h2 class="section-title" id="skills-title"><span class="idx" aria-hidden="true">03</span>Key skills</h2>
+
+          <div class="skill-group">
+            <h3>Testing &amp; Strategy</h3>
+            <ul class="chips reveal">
+              <li>Manual testing</li><li>Exploratory</li><li>Regression</li><li>Risk-based testing</li>
+              <li>Test strategy</li><li>Test case design</li><li>Defect management</li><li>Coverage analysis</li>
+              <li>API validation (Postman)</li>
+            </ul>
+          </div>
+
+          <div class="skill-group">
+            <h3>Mobile &amp; Automation</h3>
+            <ul class="chips reveal">
+              <li>iOS &amp; Android QE</li><li>XCUITest</li><li>Espresso</li><li>Barista</li><li>Appium</li><li>Maestro</li>
+              <li>Cypress</li><li>Webdriver</li><li>JavaScript</li><li>TypeScript</li><li>Bash scripting</li>
+            </ul>
+          </div>
+
+          <div class="skill-group">
+            <h3>Domain</h3>
+            <ul class="chips reveal">
+              <li>Digital banking</li><li>Payments</li><li>Cards</li><li>Accounts</li><li>Statements &amp; notices</li>
+              <li>Customer engagement</li><li>Cross-border payments</li><li>Commercial banking</li>
+            </ul>
+          </div>
+
+          <div class="skill-group">
+            <h3>Tools &amp; AI-Assisted QE</h3>
+            <ul class="chips reveal">
+              <li>JIRA</li><li>Xray</li><li>GitHub</li><li>GCP</li><li>Dynatrace</li><li>Postman</li>
+              <li>Claude Code workflows</li><li>Reporting automation</li>
+            </ul>
+          </div>
+
+          <div class="skill-group">
+            <h3>Leadership &amp; Delivery</h3>
+            <ul class="chips reveal">
+              <li>Agile delivery</li><li>Squad collaboration</li><li>Stakeholder communication</li>
+              <li>Quality coaching</li><li>Mentoring</li><li>Accessibility &amp; inclusive quality</li>
+              <li>Bug bashes</li><li>Release support</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="education" class="card reveal" aria-labelledby="education-title">
+          <h2 class="section-title" id="education-title"><span class="idx" aria-hidden="true">04</span>Education &amp; certifications</h2>
+          <ul class="edu">
+            <li>
+              <h3>Certificate IV in Leadership &amp; Management</h3>
+              <p>Crown College, Melbourne · 2017–2018</p>
+            </li>
+            <li>
+              <h3>Bachelor of Business, Information Technology &amp; eBusiness</h3>
+              <p>Auckland University of Technology, NZ · 2006–2009</p>
+            </li>
+          </ul>
+        </section>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <p>© <span id="year">2026</span> Jef Garcia · Melbourne, VIC</p>
+      <p><a href="Jef_Garcia_CV.pdf" download type="application/pdf">Download CV (PDF)</a></p>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+      /* Theme toggle */
+      var toggle = document.getElementById('themeToggle');
+      function currentTheme() {
+        return root.getAttribute('data-theme') || (darkQuery.matches ? 'dark' : 'light');
+      }
+      function syncToggle() {
+        var next = currentTheme() === 'dark' ? 'light' : 'dark';
+        toggle.setAttribute('aria-label', 'Switch to ' + next + ' theme');
+        var meta = document.querySelectorAll('meta[name="theme-color"]');
+        var bg = getComputedStyle(root).getPropertyValue('--bg').trim();
+        meta.forEach(function (m) { m.setAttribute('content', bg); });
+      }
+      toggle.addEventListener('click', function () {
+        var next = currentTheme() === 'dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', next);
+        try { localStorage.setItem('theme', next); } catch (e) {}
+        syncToggle();
+      });
+      darkQuery.addEventListener && darkQuery.addEventListener('change', syncToggle);
+      syncToggle();
+
+      /* Top bar border on scroll */
+      var bar = document.getElementById('topbar');
+      function onScroll() { bar.classList.toggle('is-scrolled', window.scrollY > 8); }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+
+      /* Stagger index for chips */
+      document.querySelectorAll('.chips').forEach(function (list) {
+        Array.prototype.forEach.call(list.children, function (li, i) { li.style.setProperty('--i', i); });
+      });
+
+      /* Reveal on scroll */
+      var targets = document.querySelectorAll('.reveal, #timeline');
+      if (!('IntersectionObserver' in window) || reduceMotion) {
+        targets.forEach(function (el) { el.classList.add('in-view'); });
+      } else {
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('in-view');
+              io.unobserve(entry.target);
+            }
+          });
+        }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+        targets.forEach(function (el) { io.observe(el); });
+      }
+
+      /* Count-up for hero numbers (visual only; final text is already in the DOM) */
+      if (!reduceMotion) {
+        document.querySelectorAll('[data-count]').forEach(function (el) {
+          var end = parseInt(el.getAttribute('data-count'), 10);
+          var from = 0;
+          var start = null, dur = 1200;
+          function step(ts) {
+            if (start === null) start = ts;
+            var p = Math.min((ts - start) / dur, 1);
+            var eased = 1 - Math.pow(1 - p, 3);
+            el.textContent = Math.round(from + (end - from) * eased);
+            if (p < 1) requestAnimationFrame(step);
+          }
+          requestAnimationFrame(step);
+        });
+      }
+
+      /* Highlight current section in nav */
+      var links = document.querySelectorAll('.topnav a');
+      if ('IntersectionObserver' in window) {
+        var navIO = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            links.forEach(function (a) {
+              if (a.getAttribute('href') === '#' + entry.target.id) a.setAttribute('aria-current', 'true');
+              else a.removeAttribute('aria-current');
+            });
+          });
+        }, { rootMargin: '-45% 0px -50% 0px' });
+        ['summary', 'experience', 'skills', 'education'].forEach(function (id) {
+          var s = document.getElementById(id); if (s) navIO.observe(s);
+        });
+      }
+
+      /* Expand collapsed content if someone prints the page directly */
+      window.addEventListener('beforeprint', function () {
+        document.querySelectorAll('details.more').forEach(function (d) { d.open = true; });
+      });
+
+      document.getElementById('year').textContent = new Date().getFullYear();
+    })();
+  </script>
+</body>
+</html>
