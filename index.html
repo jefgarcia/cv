@@ -37,6 +37,7 @@
       --accent: #0f6f67;
       --accent-soft: #d8efeb;
       --accent-text: #0b5a53;
+      --hl: #c6e8e2;
       --shadow: 0 1px 2px rgb(20 20 20 / .04), 0 8px 24px rgb(20 20 20 / .06);
       --focus: #b3470d;
 
@@ -60,6 +61,7 @@
         --accent: #5fd4c4;
         --accent-soft: #15332f;
         --accent-text: #7fe3d5;
+        --hl: #1d4a44;
         --shadow: 0 1px 2px rgb(0 0 0 / .3), 0 8px 24px rgb(0 0 0 / .35);
         --focus: #ffb37a;
         color-scheme: dark;
@@ -75,6 +77,7 @@
       --accent: #5fd4c4;
       --accent-soft: #15332f;
       --accent-text: #7fe3d5;
+      --hl: #1d4a44;
       --shadow: 0 1px 2px rgb(0 0 0 / .3), 0 8px 24px rgb(0 0 0 / .35);
       --focus: #ffb37a;
       color-scheme: dark;
@@ -187,18 +190,6 @@
     .contact a:hover { border-color: var(--accent); transform: translateY(-2px); }
     .contact svg { width: 1rem; height: 1rem; color: var(--accent); flex: none; }
 
-    .stats {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
-      gap: 1rem; list-style: none; margin-top: clamp(2rem, 5vw, 3.5rem);
-    }
-    .stats li { border-top: 2px solid var(--text); padding-top: .85rem; }
-    .stats .num {
-      display: block; font-family: var(--font-display); font-weight: 650;
-      font-size: clamp(1.9rem, 1.4rem + 1.8vw, 2.8rem); letter-spacing: -.02em; line-height: 1.1;
-      font-variant-numeric: tabular-nums;
-    }
-    .stats .lbl { color: var(--muted); font-size: .9rem; }
-
     /* ---------- Layout ---------- */
     .layout {
       display: grid; gap: clamp(2rem, 4vw, 4rem);
@@ -269,6 +260,17 @@
       content: ""; position: absolute; left: 0; top: .68em; width: .45rem; height: 2px; background: var(--accent); border-radius: 2px;
     }
 
+    /* Key-phrase highlights: bolder text + soft highlighter stroke that sweeps in on reveal */
+    .hl {
+      font-weight: 600; color: var(--text);
+      background-image: linear-gradient(var(--hl), var(--hl));
+      background-repeat: no-repeat; background-position: 0 88%; background-size: 100% .38em;
+      padding-inline: .08em; margin-inline: -.08em; border-radius: 2px;
+      -webkit-box-decoration-break: clone; box-decoration-break: clone;
+    }
+    .js .reveal .hl { background-size: 0 .38em; transition: background-size .9s cubic-bezier(.2,.7,.2,1) .35s; }
+    .js .reveal.in-view .hl { background-size: 100% .38em; }
+
     details.more { margin-top: .75rem; }
     details.more summary {
       cursor: pointer; font-weight: 600; color: var(--accent-text); font-size: .92rem;
@@ -327,17 +329,19 @@
         transition-duration: .01ms !important; transition-delay: 0s !important;
       }
       .js .reveal, .js .chips.reveal li { opacity: 1; transform: none; }
+      .js .reveal .hl { background-size: 100% .38em; }
       .js .timeline::before { transform: none; }
     }
     @media (forced-colors: active) {
       .job::before, .bullets li::before { background: CanvasText; border-color: CanvasText; }
       .card, .contact a, .chips li { border: 1px solid CanvasText; }
+      .hl { background: none; text-decoration: underline; }
     }
 
     /* ---------- Print ---------- */
     @media print {
-      :root { --bg: #fff; --surface: #fff; --surface-2: #fff; --text: #000; --muted: #333; --line: #bbb; --accent: #000; --accent-text: #000; --accent-soft: #fff; --shadow: none; }
-      .topbar, .skip-link, .footer, .hero::before, .stats { display: none !important; }
+      :root { --bg: #fff; --surface: #fff; --surface-2: #fff; --text: #000; --muted: #333; --line: #bbb; --accent: #000; --accent-text: #000; --accent-soft: #fff; --hl: transparent; --shadow: none; }
+      .topbar, .skip-link, .footer, .hero::before { display: none !important; }
       .js .reveal, .js .chips.reveal li { opacity: 1 !important; transform: none !important; }
       .js .timeline::before { transform: none; }
       .layout { grid-template-columns: 1fr; }
@@ -401,12 +405,6 @@
             </a>
           </li>
         </ul>
-
-        <ul class="stats" aria-label="Highlights">
-          <li class="enter" style="--d:4"><span class="num"><span data-count="10">10</span>+</span><span class="lbl">years in quality engineering</span></li>
-          <li class="enter" style="--d:5"><span class="num">30→5 min</span><span class="lbl">Test Summary Report prep with Claude Code</span></li>
-          <li class="enter" style="--d:6"><span class="num">iOS + Android</span><span class="lbl">mobile QE across banking &amp; payments</span></li>
-        </ul>
       </div>
     </section>
 
@@ -414,7 +412,7 @@
       <div class="main">
         <section id="summary" class="summary reveal" aria-labelledby="summary-title">
           <h2 class="section-title" id="summary-title"><span class="idx" aria-hidden="true">01</span>Professional summary</h2>
-          <p>Quality Engineer with 10+ years' experience across digital banking, payments, mobile and web platforms, spanning ANZ, ANZ Plus, Cash App and Crown Resorts. Specialises in mobile quality engineering (iOS/Android), API validation, test strategy and defect management within complex financial and Agile environments. Builds practical automation and AI-assisted tooling — including Claude Code-based reporting skills — that cut manual effort and lift team consistency. Known for identifying risk early, mentoring test analysts, and helping squads ship secure, reliable, customer-focused releases.</p>
+          <p>Quality Engineer with <strong class="hl">10+ years' experience</strong> across <strong class="hl">digital banking, payments, mobile and web platforms</strong>, spanning ANZ, ANZ Plus, Cash App and Crown Resorts. Specialises in <strong class="hl">mobile quality engineering (iOS/Android)</strong>, <strong class="hl">API validation, test strategy and defect management</strong> within complex financial and Agile environments. Builds practical automation and <strong class="hl">AI-assisted tooling</strong> — including Claude Code-based reporting skills — that cut manual effort and lift team consistency. Known for <strong class="hl">identifying risk early</strong>, <strong class="hl">mentoring test analysts</strong>, and helping squads ship secure, reliable, customer-focused releases.</p>
         </section>
 
         <section id="experience" aria-labelledby="experience-title">
@@ -434,24 +432,24 @@
 
                 <h4 class="sub">Since promotion</h4>
                 <ul class="bullets">
-                  <li>Own test strategy for the Business and Private Banking domain, setting the testing approach for new commercial features from planning through release.</li>
-                  <li>Mentor new starters on the squad, onboarding them into mobile QE practices, domain knowledge and team testing standards.</li>
-                  <li>Extended the Claude Code-based reporting skill to generate a Test Traceability Report alongside the existing Test Summary Report, giving the team end-to-end visibility from requirements to test coverage.</li>
+                  <li><strong class="hl">Own test strategy</strong> for the <strong class="hl">Business and Private Banking domain</strong>, setting the testing approach for new commercial features from planning through release.</li>
+                  <li><strong class="hl">Mentor new starters</strong> on the squad, onboarding them into mobile QE practices, domain knowledge and team testing standards.</li>
+                  <li>Extended the Claude Code-based reporting skill to generate a <strong class="hl">Test Traceability Report</strong> alongside the existing Test Summary Report, giving the team end-to-end visibility from requirements to test coverage.</li>
                 </ul>
 
                 <h4 class="sub">Core role</h4>
                 <ul class="bullets">
-                  <li>Own quality across Statements, Store &amp; Engagement, Accounts and Commercial banking — validating app behaviour, backend integration and customer communication flows before release across iOS and Android.</li>
-                  <li>Built a Postman collection to validate banner/notification APIs end-to-end, giving the team a repeatable check across backend and mobile app behaviour.</li>
-                  <li>Built end-to-end UI automation using Maestro to validate interest rate change journeys, strengthening regression coverage for a high-risk customer-facing feature.</li>
-                  <li>Created a semi-automated Test Summary Report (TSR) skill using Claude Code, cutting TSR preparation time from ~30 minutes to ~5 minutes while improving consistency across the team.</li>
+                  <li><strong class="hl">Own quality across Statements, Store &amp; Engagement, Accounts and Commercial banking</strong> — validating app behaviour, backend integration and customer communication flows before release across iOS and Android.</li>
+                  <li>Built a <strong class="hl">Postman collection</strong> to validate banner/notification APIs end-to-end, giving the team a repeatable check across backend and mobile app behaviour.</li>
+                  <li>Built <strong class="hl">end-to-end UI automation using Maestro</strong> to validate interest rate change journeys, strengthening regression coverage for a high-risk customer-facing feature.</li>
+                  <li>Created a semi-automated Test Summary Report (TSR) skill using Claude Code, <strong class="hl">cutting TSR preparation time from ~30 minutes to ~5 minutes</strong> while improving consistency across the team.</li>
                 </ul>
                 <details class="more">
                   <summary>More from this role</summary>
                   <ul class="bullets">
                     <li>Improved test data readiness by scripting and documenting setup steps for key testing journeys, reducing reliance on informal/tribal knowledge.</li>
-                    <li>Wrote shell scripts to chain CLI commands for repetitive setup tasks — e.g. activating card details, or creating a new test user and setting it up with a selfie image in one pass — cutting manual test data setup time.</li>
-                    <li>Built a proof of concept to automate terminal-based testing of legacy systems via the Mocha TN3270 terminal emulator, enabling faster, more repeatable coverage of workflows that had previously relied on manual command entry.</li>
+                    <li>Wrote shell scripts to chain CLI commands for repetitive setup tasks — e.g. activating card details, or creating a new test user and setting it up with a selfie image in one pass — <strong class="hl">cutting manual test data setup time</strong>.</li>
+                    <li>Built a proof of concept to automate terminal-based testing of legacy systems via the <strong class="hl">Mocha TN3270 terminal emulator</strong>, enabling faster, more repeatable coverage of workflows that had previously relied on manual command entry.</li>
                     <li>Used JIRA, Xray, GitHub, GCP and Postman to manage test activity, track coverage and support release decisions across a complex, fast-changing ANZ environment.</li>
                   </ul>
                 </details>
@@ -468,8 +466,8 @@
                   <p class="dates">Jul 2023 – Feb 2024</p>
                 </div>
                 <ul class="bullets">
-                  <li>Owned quality for cross-border money movement and payment card connection experiences across iOS and Android for a global payments product.</li>
-                  <li>Improved end-to-end XCUITest coverage for international use cases, increasing release confidence across global payment journeys.</li>
+                  <li>Owned quality for <strong class="hl">cross-border money movement</strong> and payment card connection experiences across iOS and Android for a global payments product.</li>
+                  <li>Improved <strong class="hl">end-to-end XCUITest coverage</strong> for international use cases, increasing release confidence across global payment journeys.</li>
                   <li>Developed and maintained test plans for payment card connection flows, adapting quickly to shifting project scope.</li>
                   <li>Contributed to Global Banking &amp; Payments team guides and data visualisation tooling used for release decision-making.</li>
                 </ul>
@@ -486,11 +484,11 @@
                   <p class="dates">Apr 2021 – Jul 2023</p>
                 </div>
                 <ul class="bullets">
-                  <li>Recognised as a top performer for consistently exceeding expectations and driving team outcomes.</li>
-                  <li>Coached the squad on mobile automation using XCUITest (iOS) and Espresso/Barista (Android); built an Appium proof of concept in JavaScript to explore future automation coverage.</li>
-                  <li>Validated payment methods including Samsung Pay, Google Pay, Apple Wallet and Visa Card Controls, supporting major payment initiatives pre-release.</li>
+                  <li>Recognised as a <strong class="hl">top performer</strong> for consistently exceeding expectations and driving team outcomes.</li>
+                  <li>Coached the squad on mobile automation using <strong class="hl">XCUITest (iOS) and Espresso/Barista (Android)</strong>; built an Appium proof of concept in JavaScript to explore future automation coverage.</li>
+                  <li>Validated payment methods including <strong class="hl">Samsung Pay, Google Pay, Apple Wallet and Visa Card Controls</strong>, supporting major payment initiatives pre-release.</li>
                   <li>Wrote Bash scripts for API testing and reporting, improving testing speed, accuracy and result visibility.</li>
-                  <li>Led bug bashes and ran accessibility/inclusive-design sessions, embedding earlier quality thinking across the squad.</li>
+                  <li>Led bug bashes and ran <strong class="hl">accessibility/inclusive-design sessions</strong>, embedding earlier quality thinking across the squad.</li>
                   <li>Used GCP logs and Dynatrace to monitor systems and speed up production issue resolution.</li>
                 </ul>
               </article>
@@ -506,8 +504,8 @@
                   <p class="dates">Nov 2019 – Apr 2021</p>
                 </div>
                 <ul class="bullets">
-                  <li>Tested a legacy-to-cloud financial data migration across UI, backend and data quality, identifying risk early to protect delivery.</li>
-                  <li>Wrote automated UI tests in TypeScript, Webdriver and Cypress, improving regression coverage and release confidence.</li>
+                  <li>Tested a <strong class="hl">legacy-to-cloud financial data migration</strong> across UI, backend and data quality, identifying risk early to protect delivery.</li>
+                  <li>Wrote automated UI tests in <strong class="hl">TypeScript, Webdriver and Cypress</strong>, improving regression coverage and release confidence.</li>
                   <li>Trained squads on test pyramid principles and onboarded new QA team members through structured training.</li>
                 </ul>
               </article>
@@ -523,9 +521,9 @@
                   <p class="dates">Sep 2018 – Nov 2019</p>
                 </div>
                 <ul class="bullets">
-                  <li>Led testing across Crown Melbourne and Crown Perth mobile apps, APIs and websites, managing two QA consultants.</li>
-                  <li>Started reusable automation frameworks (API, Android, iOS, web) to support broader Enterprise QA practices.</li>
-                  <li>Documented testing standards and embedded testing earlier in delivery, reducing critical/major defects in the Android app.</li>
+                  <li>Led testing across Crown Melbourne and Crown Perth mobile apps, APIs and websites, <strong class="hl">managing two QA consultants</strong>.</li>
+                  <li>Started <strong class="hl">reusable automation frameworks</strong> (API, Android, iOS, web) to support broader Enterprise QA practices.</li>
+                  <li>Documented testing standards and embedded testing earlier in delivery, <strong class="hl">reducing critical/major defects</strong> in the Android app.</li>
                 </ul>
               </article>
             </li>
@@ -540,7 +538,7 @@
                   <p class="dates">Dec 2016 – Sep 2018</p>
                 </div>
                 <ul class="bullets">
-                  <li>Led 3 Software Test Analysts on the Crown Rewards Revamp project and reported quality/defect insights to senior stakeholders.</li>
+                  <li><strong class="hl">Led 3 Software Test Analysts</strong> on the Crown Rewards Revamp project and reported quality/defect insights to senior stakeholders.</li>
                   <li>Owned test plans and defect registers across complex delivery programs, mentoring new Enterprise QA members.</li>
                 </ul>
               </article>
@@ -556,7 +554,7 @@
                   <p class="dates">Aug 2012 – Dec 2016</p>
                 </div>
                 <ul class="bullets">
-                  <li>Executed manual and integration testing and coordinated UAT with business units to strengthen release readiness.</li>
+                  <li>Executed manual and integration testing and <strong class="hl">coordinated UAT</strong> with business units to strengthen release readiness.</li>
                 </ul>
               </article>
             </li>
@@ -687,23 +685,6 @@
           });
         }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
         targets.forEach(function (el) { io.observe(el); });
-      }
-
-      /* Count-up for hero numbers (visual only; final text is already in the DOM) */
-      if (!reduceMotion) {
-        document.querySelectorAll('[data-count]').forEach(function (el) {
-          var end = parseInt(el.getAttribute('data-count'), 10);
-          var from = 0;
-          var start = null, dur = 1200;
-          function step(ts) {
-            if (start === null) start = ts;
-            var p = Math.min((ts - start) / dur, 1);
-            var eased = 1 - Math.pow(1 - p, 3);
-            el.textContent = Math.round(from + (end - from) * eased);
-            if (p < 1) requestAnimationFrame(step);
-          }
-          requestAnimationFrame(step);
-        });
       }
 
       /* Highlight current section in nav */
