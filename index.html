@@ -469,7 +469,7 @@
       </ul>
     </nav>
     <div class="menu-foot">
-      <a class="btn" href="Jef_Garcia_CV.pdf" download type="application/pdf">
+      <a class="btn" href="Jef_Garcia_CV.pdf" download type="application/pdf" data-goatcounter-click="download-cv-menu" data-goatcounter-title="Download CV (mobile menu)">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
         Download CV<span class="visually-hidden"> (PDF, 2 pages)</span>
       </a>
@@ -500,7 +500,7 @@
       </div>
 
       <div class="intro-foot">
-        <a class="btn" href="Jef_Garcia_CV.pdf" download type="application/pdf">
+        <a class="btn" href="Jef_Garcia_CV.pdf" download type="application/pdf" data-goatcounter-click="download-cv-header" data-goatcounter-title="Download CV (header)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
           Download CV<span class="visually-hidden"> (PDF, 2 pages)</span>
         </a>
@@ -672,7 +672,7 @@
           </li>
         </ol>
 
-        <a class="arrow-link" href="Jef_Garcia_CV.pdf" download type="application/pdf">
+        <a class="arrow-link" href="Jef_Garcia_CV.pdf" download type="application/pdf" data-goatcounter-click="download-cv-experience" data-goatcounter-title="Download CV (after experience)">
           <span class="arrow-text">Download full CV <span class="visually-hidden">(</span>PDF<span class="visually-hidden">)</span></span>
           <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M3 10a.75.75 0 0 1 .75-.75h10.64l-3.22-3.22a.75.75 0 1 1 1.06-1.06l4.5 4.5a.75.75 0 0 1 0 1.06l-4.5 4.5a.75.75 0 1 1-1.06-1.06l3.22-3.22H3.75A.75.75 0 0 1 3 10Z" clip-rule="evenodd"/></svg>
         </a>
@@ -750,6 +750,8 @@
     </main>
   </div>
 
+  <!-- GoatCounter: cookieless analytics (page views, referrers, location, CV downloads, sections read) -->
+  <script data-goatcounter="https://jgarcia.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
   <script>
     (function () {
       var root = document.documentElement;
@@ -761,6 +763,31 @@
       var menuLinks = Array.prototype.slice.call(document.querySelectorAll('.menu-nav a'));
       var sections = links.map(function (a) { return document.getElementById(a.getAttribute('href').slice(1)); });
       var active = -1, ticking = false;
+
+      /* Analytics: send one GoatCounter event per section, the first time it stays
+         active for 1s, so sections that only fly past during a nav jump don't count.
+         Views from before the async script has loaded are queued until window load. */
+      var seenSections = {}, pendingSections = [], dwellTimer = null;
+      function sendSection(i) {
+        var id = sections[i] && sections[i].id;
+        if (!id || seenSections[id]) return;
+        if (!(window.goatcounter && window.goatcounter.count)) {
+          if (pendingSections.indexOf(i) === -1) pendingSections.push(i);
+          return;
+        }
+        seenSections[id] = true;
+        window.goatcounter.count({ path: 'section-' + id, title: 'Viewed: ' + links[i].textContent.trim(), event: true });
+      }
+      function trackSection(i) {
+        clearTimeout(dwellTimer);
+        dwellTimer = setTimeout(function () { sendSection(i); }, 1000);
+      }
+      window.addEventListener('load', function () {
+        var queued = pendingSections;
+        pendingSections = [];
+        queued.forEach(sendSection);
+      });
+
       function updateNav() {
         ticking = false;
         var mark = window.innerHeight * 0.4, idx = 0;
@@ -768,6 +795,7 @@
         if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) idx = sections.length - 1;
         if (idx === active) return;
         active = idx;
+        trackSection(idx);
         links.concat(menuLinks).forEach(function (a) {
           if (sections[idx] && a.getAttribute('href') === '#' + sections[idx].id) a.setAttribute('aria-current', 'true');
           else a.removeAttribute('aria-current');
